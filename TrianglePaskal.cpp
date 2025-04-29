@@ -1,19 +1,6 @@
 #include<iostream>
 #include<stdexcept>
 
-/*template<typename T>
-void addColumn(T**& mtr, int32_t& rows, int32_t& cols) {
-    for(int32_t i = 0; i < rows; ++i) {
-        T* newRow = new T[cols + 1]{};
-        for(int32_t j = 0; j < cols; ++j) {
-            newRow[j] = mtr[i][j];
-        }
-        delete[] mtr[i];  // Освобождаем память старой строки
-        mtr[i] = newRow;   // Указатель на новую строку
-    }
-    ++cols; // увеличиваем количество столбцов
-}*/
-
 void OutputPaskalTriangle(int32_t**& mtr, int32_t n)
 {
     if (n == 1)
@@ -41,13 +28,13 @@ void OutputPaskalTriangle(int32_t**& mtr, int32_t n)
 }
 
 template <typename T>
-T **CreateMatrix(int32_t rows, int32_t cols)
+T** CreateMatrix(int32_t rows, int32_t cols)
 {
     if (rows <= 0 || cols <= 0)
     {
         throw std::invalid_argument("Size of the array must be greater than zero.");
     }
-    T **mtr = new T *[rows];
+    T** mtr = new T* [rows];
     for (int32_t i{}; i < rows; ++i)
     {
         mtr[i] = new T[cols]{};
@@ -56,7 +43,7 @@ T **CreateMatrix(int32_t rows, int32_t cols)
 }
 
 template <typename T>
-void DeleteMatrix(T **&mtr, int32_t rows)
+void DeleteMatrix(T** &mtr, int32_t rows)
 {
     for (int32_t i{}; i < rows; ++i)
     {
@@ -71,7 +58,7 @@ int main()
     int32_t n{};
     std::cin >> n;
 
-    int32_t **triangle = CreateMatrix<int32_t>(2, n);
+    int32_t** triangle = CreateMatrix<int32_t>(2, n);
     triangle[0][0] = 1;
     triangle[0][1] = 1;
 
