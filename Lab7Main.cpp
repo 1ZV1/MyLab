@@ -2,86 +2,101 @@
 #include<string>
 #include<algorithm>
 
-template <typename T>
-T* CreateArray(int32_t sizeArr)
+void CheckWordCondition(std::string& subStr)
 {
-    if (sizeArr <= 0)
+    bool isNum{true};
+    for (size_t i{}; i < subStr.length(); ++i)
     {
-        throw std::invalid_argument("Size of the array must be large than zero.");
-    }
-    T* array = new T[sizeArr] {};
-    return array;
-}
-
-//13.	Дана строка, слова в которой состоят из букв латинского алфавита и десятичных цифр.
-/*Остальные символы считаются разделителями между словами.
-Получить новую строку, выполняя в заданной строке замены по следующему правилу.
-Все слова, имеющие длину менее 7 символов и состоящие только из цифр, заменяются словами,
-записанными в обратном порядке. Во всех словах, в которых встречаются как буквы, так и цифры,
-строчные буквы заменяются на прописные. Все слова, состоящие только из букв, записываются
-строчными буквами.
-Слова в новой строке должны разделяться ровно одним пробелом.*/
-
-//fdgf3 34fghdf gFd SDsdss1 SSSR 1234567
-
-//FDGF3 34FGHDF gfd SDSDSS1 sssr 7654321
-void FormatingStr(std::string& str, const std::string& delimiters)
-{
-    size_t j{}, j1{};
-    size_t i {str.find_first_of(delimiters)};
-    std::string newStr;
-    while (i != std::string::npos)
-    {
-        std::string underStr {str.substr(j, i - j)};
-        if (!underStr.empty())
+        if (!isdigit(subStr[i]))
         {
-            j1 = j;
-            bool isNum{true}, isWord{true};
-            while(j1 != i)
+            isNum = false;
+            break;
+        }
+    }
+    if (isNum && subStr.length() < 7)
+    {
+        std::reverse(subStr.begin(), subStr.end());
+    }
+    else
+    {
+        if (!isNum)
+        {
+            bool isWord = true;
+            for (size_t i{}; i < subStr.length(); ++i)
             {
-                if(str[j1] > '9' || str[j1] < '0')
+                if (!isalpha(subStr[i]))
                 {
-                    isNum = false;
+                    isWord = false;
                     break;
                 }
-                //++j1;
             }
-            if(j1 != 0)
+            if (isWord)
             {
-                isWord = false;
-            }
-            if(isNum && (i - j1) >= 7)
-            {
-                j1 = j;
-                char temp;
-                for(;j1 < i/2; ++j1)
+                for (size_t i{}; i < subStr.length(); ++i)
                 {
-                    temp = str[j1];
-                    str[j1] = str[i - j1];
-                    str[i - j1] = temp;
+                    subStr[i] = tolower(subStr[i]);
                 }
             }
-            if(isWord)
+            else
             {
-                while(j1 != i)
+                for (size_t i{}; i < subStr.length(); ++i)
                 {
-                    if(str[j1] >= 'A' && str[j1] <= 'Z')
+                    if (!isdigit(subStr[i]))
                     {
-                        std::cout << 'a';
+                        subStr[i] = toupper(subStr[i]);
                     }
-                    ++j1;
                 }
             }
-            newStr += underStr + ' ';
-            std::cout << newStr << '\n';
         }
-        j = i + 1;
-        i = str.find_first_of(delimiters, j);
     }
-    std::string lastUnderStr = str.substr(j);
-    if (!lastUnderStr.empty())
-    {
+}
 
+void FormatingStr(std::string& str, const std::string& delimiters)
+{
+    size_t j{};
+    size_t i {str.find_first_of(delimiters)};
+    std::string newStr;
+    for(size_t k{}; k < delimiters.length(); ++k)
+    {
+        if(str[j] == delimiters[k])
+        {
+            delim = true;
+        }
+    }
+    if(i == std::string::npos)
+    {
+        CheckWordCondition(str);
+        newStr = str;
+    }
+    else
+    {
+        while (i != std::string::npos)
+        {
+            while (i != std::string::npos && i == j) 
+            {
+                j = i + 1;
+                i = str.find_first_of(delimiters, j);
+            }
+            if (i == std::string::npos)
+            {
+                break;
+            }
+            std::string subStr{str.substr(j, i - j)};
+            if (!subStr.empty())
+            {
+                CheckWordCondition(subStr);
+                newStr += subStr + ' ';
+                j = i + 1;
+                i = str.find_first_of(delimiters, j);
+            }
+            std::string lastSubStr = str.substr(j);
+            if (!lastSubStr.empty())
+            {
+                CheckWordCondition(lastSubStr);
+                newStr += lastSubStr;
+            }
+        }
+        str = newStr;
     }
 }
 
@@ -96,17 +111,13 @@ int main()
         {
             throw std::invalid_argument("Empty string");
         }
-        std::string delimeters{" \\,.\n\0-`"};
+        std::string delimeters{" \\,.\n\0-`!&=@#$%^&*)(+/"};
         FormatingStr(str, delimeters);
-
-
-
+        std::cout << str;
     }
     catch (const std::exception &e)
     {
         std::cerr << e.what() << '\n';
     }
-
-    std::cout  << '\n'<< str;
     return 0;
 }
